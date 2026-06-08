@@ -26,12 +26,17 @@
     <div class="flex min-h-screen">
 
         {{-- Sidebar --}}
-        <aside class="w-64 bg-gray-900 text-gray-300 p-4 space-y-2">
-            <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 rounded hover:bg-gray-700">
+        <aside class="w-64 bg-gray-900 text-gray-300 p-4 space-y-1">
+            <a href="{{ route('admin.dashboard') }}"
+            class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-700 text-white' : '' }}">
                 Dashboard
             </a>
-            {{-- More nav links will be added per module --}}
+            <a href="{{ route('admin.rooms.index') }}"
+            class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.rooms.*') ? 'bg-gray-700 text-white' : '' }}">
+                Rooms
+            </a>
         </aside>
+
 
         {{-- Main Content --}}
         <main class="flex-1 p-6">
