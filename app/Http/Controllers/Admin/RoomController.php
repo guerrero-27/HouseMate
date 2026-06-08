@@ -124,4 +124,15 @@ class RoomController extends Controller
 
         return redirect()->route('admin.rooms.index')->with('success', 'Room Deleted Successfully');
     }
+
+    public function destroyImage(RoomImage $image): RedirectResponse
+    {
+        Storage::disk('public')->delete($image->image_path);
+        $roomId = $image->room_id;
+        $image->delete();
+
+        return redirect()->route('admin.rooms.edit', $roomId)
+            ->with('success', 'Image removed.');
+    }
+    
 }
