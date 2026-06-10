@@ -51,9 +51,16 @@
             {{-- Reserve Button -- will be linked in Phase 4 --}}
             @if($room->status === 'available')
             <div class="mt-6">
-                <a href="#" class="block text-center bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700">
+                <a href="{{ route('tenant.reservations.create', $room) }}"
+                class="block text-center bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700">
                     Reserve This Room
                 </a>
+            </div>
+            @else
+            <div class="mt-6">
+                <div class="text-center bg-gray-100 text-gray-500 py-3 rounded-lg text-sm font-semibold">
+                    This room is not available for reservation
+                </div>
             </div>
             @endif
 

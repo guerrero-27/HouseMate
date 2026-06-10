@@ -31,6 +31,10 @@
             class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-700 text-white' : '' }}">
                 Dashboard
             </a>
+            <a href="{{ route('admin.reservations.index') }}"
+            class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.reservations.*') ? 'bg-gray-700 text-white' : '' }}">
+                Reservations
+            </a>
             <a href="{{ route('admin.rooms.index') }}"
             class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.rooms.*') ? 'bg-gray-700 text-white' : '' }}">
                 Rooms
