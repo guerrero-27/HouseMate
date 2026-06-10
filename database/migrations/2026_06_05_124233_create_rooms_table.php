@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('room_number')->unique();
             $table->string('room_type');
             $table->text('description')->nullable();
-            $table->decimal('montly_rate', 8, 2);
+            $table->decimal('monthly_rate', 8, 2);
             $table->integer('capacity');
             $table->integer('floor_number')->nullable();
             $table->enum('status', ['available', 'occupied', 'maintenance'])->default('available');

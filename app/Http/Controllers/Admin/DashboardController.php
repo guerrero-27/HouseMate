@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Room;
+use App\Models\Reservation;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
