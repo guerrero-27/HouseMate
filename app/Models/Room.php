@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Room extends Model
 {
@@ -10,7 +11,7 @@ class Room extends Model
         'room_number',
         'room_type',
         'description',
-        'montly_rate',
+        'monthly_rate',
         'capacity',
         'floor_number',
         'status',
@@ -22,6 +23,11 @@ class Room extends Model
         return $this->hasMany(RoomImage::class);
     }
 
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
     public function scopeAvailable($query)
     {
         return $query->where('status', 'available');
@@ -29,11 +35,11 @@ class Room extends Model
 
     public function statusColor(): string
     {
-        return match($this->status){
-            'vailable' => 'green',
-            'occupied' => 'red',
+        return match($this->status) {
+            'available'   => 'green',
+            'occupied'    => 'red',
             'maintenance' => 'yellow',
-            default => 'gray',
+            default       => 'gray',
         };
     }
 }

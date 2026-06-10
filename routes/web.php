@@ -3,8 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\RoomController as AdminRoomController;
+use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Http\Controllers\Tenant\DashboardController as TenantDashboard;
 use App\Http\Controllers\Tenant\RoomController as TenantRoomController;
+use App\Http\Controllers\Tenant\ReservationController as TenantReservationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,8 +20,12 @@ Route::prefix('admin')
         Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
         Route::resource('rooms', AdminRoomController::class);
         Route::delete('/rooms/images/{image}', [AdminRoomController::class, 'destroyImage'])
-    ->name('rooms.images.destroy');
+            ->name('rooms.images.destroy');
 
+        // Reservations
+        Route::get('/reservations', [AdminReservationController::class, 'index'])->name('reservations.index');
+        Route::get('/reservations/{reservation}', [AdminReservationController::class, 'show'])->name('reservations.show');
+        Route::patch('/reservations/{reservation}/status', [AdminReservationController::class, 'updateStatus'])->name('reservations.updateStatus');
     });
 
 // Tenant routes
@@ -30,6 +36,13 @@ Route::prefix('tenant')
         Route::get('/dashboard', [TenantDashboard::class, 'index'])->name('dashboard');
         Route::get('/rooms', [TenantRoomController::class, 'index'])->name('rooms.index');
         Route::get('/rooms/{room}', [TenantRoomController::class, 'show'])->name('rooms.show');
+
+        // Reservations
+        Route::get('/reservations', [TenantReservationController::class, 'index'])->name('reservations.index');
+        Route::get('/reservations/create/{room}', [TenantReservationController::class, 'create'])->name('reservations.create');
+        Route::post('/reservations', [TenantReservationController::class, 'store'])->name('reservations.store');
+        Route::get('/reservations/{reservation}', [TenantReservationController::class, 'show'])->name('reservations.show');
+        Route::patch('/reservations/{reservation}/cancel', [TenantReservationController::class, 'cancel'])->name('reservations.cancel');
     });
 
 require __DIR__.'/auth.php';

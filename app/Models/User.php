@@ -55,4 +55,17 @@ class User extends Authenticatable
     {
         return $this->role === 'tenant';
     }
+
+    public function reservations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    public function activeReservation(): ?Reservation
+    {
+        return $this->reservations()
+            ->whereIn('status', ['approved', 'active'])
+            ->latest()
+            ->first();
+    }
 }
