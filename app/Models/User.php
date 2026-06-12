@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasMany(Reservation::class);
     }
 
+    public function payments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
     public function activeReservation(): ?Reservation
     {
         return $this->reservations()
