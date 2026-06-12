@@ -1,0 +1,146 @@
+@extends('layouts.admin')
+
+@section('title', 'Create Bill')
+
+@section('content')
+
+<div class="max-w-2xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Create Payment Bill</h1>
+        <a href="{{ route('admin.payments.index') }}" class="text-sm text-gray-500 hover:underline">← Back</a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6">
+        <form method="POST" action="{{ route('admin.payments.store') }}" id="paymentForm">
+            @csrf
+
+            {{-- Select Tenant --}}
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tenant *</label>
+                <select name="user_id" id="tenantSelect"
+                        class="w-full border rounded-lg px-3 py-2 text-sm @error('user_id') border-red-500 @enderror">
+                    <option value="">— Select Tenant —</option>
+                    @foreach($tenants as $tenant)
+                        <option value="{{ $tenant->id }}" {{ old('user_id') == $tenant->id ? 'selected' : '' }}>
+                            {{ $tenant->name }} ({{ $tenant->email }})
+                        </option>
+                    @endforeach
+                </select>
+                @error('user_id')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Select Reservation (dynamically loaded) --}}
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Reservation / Room *</label>
+                <select name="reservation_id" id="reservationSelect"
+                        class="w-full border rounded-lg px-3 py-2 text-sm @error('reservation_id') border-red-500 @enderror">
+                    <option value="">— Select tenant first —</option>
+                </select>
+                @error('reservation_id')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                {{-- Payment Type --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Payment Type *</label>
+                    <select name="payment_type"
+                            class="w-full border rounded-lg px-3 py-2 text-sm @error('payment_type') border-red-500 @enderror">
+                        <option value="rent"        {{ old('payment_type') === 'rent'        ? 'selected' : '' }}>Monthly Rent</option>
+                        <option value="electricity" {{ old('payment_type') === 'electricity' ? 'selected' : '' }}>Electricity</option>
+                        <option value="water"       {{ old('payment_type') === 'water'       ? 'selected' : '' }}>Water</option>
+                        <option value="other"       {{ old('payment_type') === 'other'       ? 'selected' : '' }}>Other</option>
+                    </select>
+                </div>
+
+                {{-- Billing Month --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Billing Month *</label>
+                    <input type="month" name="billing_month"
+                           value="{{ old('billing_month', now()->format('Y-m')) }}"
+                           class="w-full border rounded-lg px-3 py-2 text-sm @error('billing_month') border-red-500 @enderror">
+                    @error('billing_month')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Amount --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₱) *</label>
+                    <input type="number" name="amount" id="amountField"
+                           value="{{ old('amount') }}"
+                           class="w-full border rounded-lg px-3 py-2 text-sm @error('amount') border-red-500 @enderror"
+                           step="0.01" min="1">
+                    @error('amount')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Due Date --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Due Date *</label>
+                    <input type="date" name="due_date"
+                           value="{{ old('due_date') }}"
+                           class="w-full border rounded-lg px-3 py-2 text-sm @error('due_date') border-red-500 @enderror">
+                    @error('due_date')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button type="submit"
+                        class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 text-sm font-medium">
+                    Create Bill
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+    // When tenant is selected, fetch their reservations via AJAX
+    document.getElementById('tenantSelect').addEventListener('change', function () {
+        const userId = this.value;
+        const reservationSelect = document.getElementById('reservationSelect');
+        const amountField = document.getElementById('amountField');
+
+        reservationSelect.innerHTML = '<option value="">Loading...</option>';
+
+        if (!userId) {
+            reservationSelect.innerHTML = '<option value="">— Select tenant first —</option>';
+            return;
+        }
+
+        fetch(`{{ route('admin.payments.reservationsByTenant') }}?user_id=${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                reservationSelect.innerHTML = '<option value="">— Select Reservation —</option>';
+                data.forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r.id;
+                    opt.dataset.rate = r.rate; // store the rate for auto-fill
+                    opt.textContent = r.label;
+                    reservationSelect.appendChild(opt);
+                });
+            });
+    });
+
+    // Auto-fill amount when reservation is selected and type is "rent"
+    document.getElementById('reservationSelect').addEventListener('change', function () {
+        const selected = this.options[this.selectedIndex];
+        const paymentType = document.querySelector('[name="payment_type"]').value;
+        if (selected.dataset.rate && paymentType === 'rent') {
+            document.getElementById('amountField').value = selected.dataset.rate;
+        }
+    });
+</script>
+@endpush
+
+@endsection
