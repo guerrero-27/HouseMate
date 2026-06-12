@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Reservation extends Model
 {
@@ -21,8 +23,8 @@ class Reservation extends Model
     {
         return [
             'move_in_date' => 'date',
-            'approved_at' => 'datetime',
-            'rejected_at' => 'datetime',
+            'approved_at'  => 'datetime',
+            'rejected_at'  => 'datetime',
         ];
     }
 
@@ -33,7 +35,12 @@ class Reservation extends Model
 
     public function room(): BelongsTo
     {
-        return $this->belonsTo(Room::class);
+        return $this->belongsTo(Room::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 
     public function isPending(): bool
