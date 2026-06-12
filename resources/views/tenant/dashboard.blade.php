@@ -23,6 +23,26 @@
         <p class="text-xl font-bold text-gray-800">No Payments</p>
     </div>
 
+    <div class="bg-white rounded-xl shadow p-5 border-l-4 border-red-600">
+        <p class="text-sm text-gray-500">Rental Status</p>
+        <p class="text-xl font-bold text-gray-800">
+            {{ $reservation ? 'Active — Room ' . $reservation->room->room_number : 'No Active Lease' }}
+        </p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-5 border-l-4 border-yellow-500">
+        <p class="text-sm text-gray-500">Next Due Date</p>
+        <p class="text-xl font-bold text-gray-800">
+            {{ $nextDue ? $nextDue->due_date->format('M d, Y') : '—' }}
+        </p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-5 border-l-4 border-red-400">
+        <p class="text-sm text-gray-500">Unpaid Bills</p>
+        <p class="text-xl font-bold text-gray-800">{{ $unpaidCount }}</p>
+    </div>
+
+
 </div>
 
 @endsection

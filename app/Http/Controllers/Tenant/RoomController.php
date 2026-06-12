@@ -11,8 +11,8 @@ class RoomController extends Controller
 {
     public function index(): View
     {
-        $room = Room::available()->latest()->paginate(9);
-        return view('tenent.rooms.index', compact('room'));
+        $rooms = Room::available()->latest()->paginate(9);
+        return view('tenant.rooms.index', compact('rooms'));
     }
 
     public function show(Room $room): View

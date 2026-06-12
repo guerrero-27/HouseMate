@@ -13,6 +13,8 @@
         <div class="flex items-center gap-4">
             <a href="{{ route('tenant.dashboard') }}" class="text-sm hover:underline">Dashboard</a>
             <a href="{{ route('tenant.reservations.index') }}" class="text-sm hover:underline">My Reservations</a>
+            <a href="{{ route('tenant.payments.index') }}" class="text-sm hover:underline">My Payments</a>
+
 
             <span class="text-sm">{{ auth()->user()->name }}</span>
             <form method="POST" action="{{ route('logout') }}">

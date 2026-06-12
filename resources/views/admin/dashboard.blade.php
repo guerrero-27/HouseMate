@@ -27,6 +27,15 @@
         <p class="text-xs text-gray-500 uppercase">Total Tenants</p>
         <p class="text-3xl font-bold text-gray-800">{{ $totalTenants }}</p>
     </div>
+    <div class="bg-white rounded-xl shadow p-5 border-l-4 border-purple-500">
+        <p class="text-xs text-gray-500 uppercase">For Verification</p>
+        <p class="text-3xl font-bold text-gray-800">{{ $pendingPayments }}</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-5 border-l-4 border-indigo-500">
+        <p class="text-xs text-gray-500 uppercase">Revenue This Month</p>
+        <p class="text-2xl font-bold text-gray-800">₱{{ number_format($revenueThisMonth, 2) }}</p>
+    </div>
 </div>
 
 {{-- Recent Reservations --}}

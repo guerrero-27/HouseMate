@@ -21,7 +21,7 @@ class Payment extends Model
         'verified_at',
     ];
 
-    protected function $casts(): array
+    protected function casts(): array
     {
         return [
             'due_date' => 'date',
@@ -79,8 +79,8 @@ class Payment extends Model
             'pending_verification' => 'For Verification',
             'paid' => 'Paid',
             'overdue' => 'Overdue',
-            default => ucfirst($this->status);
-        }
+            default => ucfirst($this->status),
+        };
     }
 
     public function billingMonthLabel(): string
