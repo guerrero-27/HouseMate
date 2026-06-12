@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('due_date');
             $table->date('paid_date')->nullable();
             $table->text('admin_note')->nullable();
-            $table->timestamp('receipt_update_at')->nullable();
+            $table->timestamp('receipt_uploaded_at')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });
