@@ -30,6 +30,7 @@ Route::prefix('admin')
     ->middleware(['auth', 'role:admin'])
     ->group(function () {
         Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
+        Route::get('/profile', fn() => view('admin.profile'))->name('profile');
 
         Route::resource('rooms', AdminRoomController::class);
         Route::delete('/rooms/images/{image}', [AdminRoomController::class, 'destroyImage'])
