@@ -60,7 +60,9 @@
                     </td>
                     <td class="px-4 py-3">
                         <a href="{{ route('admin.reservations.show', $reservation) }}"
-                           class="text-indigo-600 dark:text-indigo-400 hover:underline text-xs">Review</a>
+                           class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50">
+                            Review
+                        </a>
                     </td>
                 </tr>
                 @empty

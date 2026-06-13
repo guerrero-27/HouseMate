@@ -5,14 +5,24 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\RoomController as AdminRoomController;
 use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
+use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Tenant\DashboardController as TenantDashboard;
 use App\Http\Controllers\Tenant\RoomController as TenantRoomController;
 use App\Http\Controllers\Tenant\ReservationController as TenantReservationController;
 use App\Http\Controllers\Tenant\PaymentController as TenantPaymentController;
+use App\Http\Controllers\Tenant\AnnouncementController as TenantAnnouncementController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::get('/dashboard', function () {
+    if (auth()->user()->isAdmin()) {
+        return redirect()->route('admin.dashboard');
+    }
+    return redirect()->route('tenant.dashboard');
+})->middleware('auth')->name('dashboard');
 
 // Admin routes
 Route::prefix('admin')
@@ -32,9 +42,12 @@ Route::prefix('admin')
         Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
         Route::get('/payments/create', [AdminPaymentController::class, 'create'])->name('payments.create');
         Route::post('/payments', [AdminPaymentController::class, 'store'])->name('payments.store');
+        Route::get('/payments/reservations-by-tenant', [AdminPaymentController::class, 'getReservationsByTenant'])->name('payments.reservationsByTenant');
         Route::get('/payments/{payment}', [AdminPaymentController::class, 'show'])->name('payments.show');
         Route::patch('/payments/{payment}/verify', [AdminPaymentController::class, 'verify'])->name('payments.verify');
-        Route::get('/payments/reservations-by-tenant', [AdminPaymentController::class, 'getReservationsByTenant'])->name('payments.reservationsByTenant');
+
+        Route::resource('announcements', AdminAnnouncementController::class)
+            ->except(['show']);
     });
 
 // Tenant routes
@@ -55,6 +68,16 @@ Route::prefix('tenant')
         Route::get('/payments', [TenantPaymentController::class, 'index'])->name('payments.index');
         Route::get('/payments/{payment}', [TenantPaymentController::class, 'show'])->name('payments.show');
         Route::post('/payments/{payment}/upload-receipt', [TenantPaymentController::class, 'uploadReceipt'])->name('payments.uploadReceipt');
+
+        Route::get('/announcements', [TenantAnnouncementController::class, 'index'])->name('announcements.index');
+        Route::get('/announcements/{announcement}', [TenantAnnouncementController::class, 'show'])->name('announcements.show');
     });
+
+// Notifications — accessible by both admin and tenant
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/{id}/read', [NotificationController::class, 'read'])->name('notifications.read');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+});
 
 require __DIR__.'/auth.php';

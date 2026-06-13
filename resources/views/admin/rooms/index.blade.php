@@ -59,18 +59,26 @@
                         {{ ucfirst($room->status) }}
                     </span>
                 </td>
-                <td class="px-4 py-3 flex gap-2">
-                    <a href="{{ route('admin.rooms.edit', $room) }}"
-                       class="text-indigo-600 dark:text-indigo-400 hover:underline text-xs">Edit</a>
-
-                    <form method="POST" action="{{ route('admin.rooms.destroy', $room) }}"
-                          onsubmit="return confirm('Delete this room?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-red-600 dark:text-red-400 hover:underline text-xs">
-                            Delete
-                        </button>
-                    </form>
+                <td class="px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('admin.rooms.show', $room) }}"
+                           class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+                            View
+                        </a>
+                        <a href="{{ route('admin.rooms.edit', $room) }}"
+                           class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50">
+                            Edit
+                        </a>
+                        <form method="POST" action="{{ route('admin.rooms.destroy', $room) }}"
+                              onsubmit="return confirm('Delete this room?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             @empty

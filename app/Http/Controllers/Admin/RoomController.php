@@ -74,7 +74,7 @@ class RoomController extends Controller
     public function edit(Room $room)
     {
         $room->load('images');
-        return view('admin.room.edit', compact('room'));
+        return view('admin.rooms.edit', compact('room'));
     }
 
     /**
