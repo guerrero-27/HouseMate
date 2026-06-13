@@ -53,18 +53,55 @@
         </div>
 
         @if($reservation->isPending())
-        <div class="border-t border-gray-200 dark:border-gray-700 pt-5 space-y-4">
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-5 space-y-4" x-data="{ approveModal: false }">
 
-            <form method="POST" action="{{ route('admin.reservations.updateStatus', $reservation) }}">
+            {{-- Approve Form --}}
+            <form id="approveForm" method="POST" action="{{ route('admin.reservations.updateStatus', $reservation) }}">
                 @csrf
                 @method('PATCH')
                 <input type="hidden" name="status" value="approved">
-                <button type="submit"
-                        onclick="return confirm('Approve this reservation? The room will be marked as occupied.')"
+                <button type="button" @click="approveModal = true"
                         class="w-full bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg font-semibold text-sm">
                     ✓ Approve Reservation
                 </button>
             </form>
+
+            {{-- Approve Confirmation Modal --}}
+            <div x-show="approveModal"
+                 x-transition:enter="ease-out duration-200"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-150"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                <div x-show="approveModal"
+                     x-transition:enter="ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="ease-in duration-150"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl p-8 max-w-sm w-full mx-4 text-center">
+                    <div class="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Approve Reservation?</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">The room will be marked as <span class="font-medium text-gray-700 dark:text-gray-300">occupied</span> once approved.</p>
+                    <div class="flex gap-3">
+                        <button @click="approveModal = false"
+                                class="flex-1 px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">
+                            Cancel
+                        </button>
+                        <button @click="$el.closest('[x-data]').querySelector('#approveForm').submit()"
+                                class="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-green-600 hover:bg-green-700 text-white">
+                            Yes, Approve
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <div x-data="{ open: false }">
                 <button @click="open = !open"

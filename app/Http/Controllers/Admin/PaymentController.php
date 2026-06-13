@@ -48,7 +48,7 @@ class PaymentController extends Controller
             ->get()
             ->map(fn($r) => [
                 'id'    => $r->id,
-                'label' => "Room {$r->room->room_number} — ₱" . number_format($r->room->monthly_rate, 2),
+                'label' => "Room {$r->room->room_number} ({$r->room->room_type}) — ₱" . number_format($r->room->monthly_rate, 2) . '/mo',
                 'rate'  => $r->room->monthly_rate,
             ]);
 

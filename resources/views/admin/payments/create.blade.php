@@ -36,8 +36,9 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Reservation / Room *</label>
                 <select name="reservation_id" id="reservationSelect"
                         class="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm @error('reservation_id') border-red-500 @enderror">
-                    <option value="">— Select tenant first —</option>
+                    <option value="">— Select a tenant first —</option>
                 </select>
+                <p id="reservationHint" class="text-xs text-gray-400 dark:text-gray-500 mt-1 hidden">No active reservations found for this tenant.</p>
                 @error('reservation_id')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
@@ -105,22 +106,38 @@
 
 @push('scripts')
 <script>
-    document.getElementById('tenantSelect').addEventListener('change', function () {
+    const tenantSelect      = document.getElementById('tenantSelect');
+    const reservationSelect = document.getElementById('reservationSelect');
+    const amountField       = document.getElementById('amountField');
+    const reservationHint   = document.getElementById('reservationHint');
+
+    tenantSelect.addEventListener('change', function () {
         const userId = this.value;
-        const reservationSelect = document.getElementById('reservationSelect');
-        const amountField = document.getElementById('amountField');
 
         reservationSelect.innerHTML = '<option value="">Loading...</option>';
+        reservationSelect.disabled = true;
+        reservationHint.classList.add('hidden');
+        amountField.value = '';
 
         if (!userId) {
-            reservationSelect.innerHTML = '<option value="">— Select tenant first —</option>';
+            reservationSelect.innerHTML = '<option value="">— Select a tenant first —</option>';
+            reservationSelect.disabled = false;
             return;
         }
 
         fetch(`{{ route('admin.payments.reservationsByTenant') }}?user_id=${userId}`)
             .then(res => res.json())
             .then(data => {
-                reservationSelect.innerHTML = '<option value="">— Select Reservation —</option>';
+                reservationSelect.innerHTML = '';
+                reservationSelect.disabled = false;
+
+                if (data.length === 0) {
+                    reservationSelect.innerHTML = '<option value="">— No active reservations —</option>';
+                    reservationHint.classList.remove('hidden');
+                    return;
+                }
+
+                reservationSelect.innerHTML = '<option value="">— Select a room —</option>';
                 data.forEach(r => {
                     const opt = document.createElement('option');
                     opt.value = r.id;
@@ -128,14 +145,30 @@
                     opt.textContent = r.label;
                     reservationSelect.appendChild(opt);
                 });
+
+                // Auto-select if only one reservation
+                if (data.length === 1) {
+                    reservationSelect.value = data[0].id;
+                    reservationSelect.dispatchEvent(new Event('change'));
+                }
             });
     });
 
-    document.getElementById('reservationSelect').addEventListener('change', function () {
+    reservationSelect.addEventListener('change', function () {
         const selected = this.options[this.selectedIndex];
         const paymentType = document.querySelector('[name="payment_type"]').value;
         if (selected.dataset.rate && paymentType === 'rent') {
-            document.getElementById('amountField').value = selected.dataset.rate;
+            amountField.value = selected.dataset.rate;
+        }
+    });
+
+    // Also auto-fill when payment type changes after room is selected
+    document.querySelector('[name="payment_type"]').addEventListener('change', function () {
+        const selected = reservationSelect.options[reservationSelect.selectedIndex];
+        if (selected && selected.dataset.rate && this.value === 'rent') {
+            amountField.value = selected.dataset.rate;
+        } else if (this.value !== 'rent') {
+            amountField.value = '';
         }
     });
 </script>

@@ -31,9 +31,9 @@
             {{-- Right form panel --}}
             <div class="flex-1 flex flex-col justify-center items-center px-6 py-12 bg-white">
                 <div class="w-full max-w-md">
-                    <div class="lg:hidden mb-8 text-center">
-                        <span class="text-indigo-600 text-2xl font-bold">🏠 HouseMate</span>
-                    </div>
+                    {{-- <div class="lg:hidden mb-8 text-center">
+                        <span class="text-indigo-600 text-2xl font-bold">HouseMate</span>
+                    </div> --}}
                     {{ $slot }}
                 </div>
             </div>

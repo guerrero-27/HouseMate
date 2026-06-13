@@ -17,7 +17,7 @@
     <nav class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
 
-            <span class="text-base font-bold text-gray-900 dark:text-white shrink-0">🏠 HouseMate</span>
+            <span class="text-base font-bold text-gray-900 dark:text-white shrink-0">HouseMate</span>
 
             {{-- Desktop nav --}}
             <div class="hidden md:flex items-center gap-1 text-sm">
