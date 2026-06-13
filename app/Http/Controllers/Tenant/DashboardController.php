@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
-use App\Models\Payment;
 
 class DashboardController extends Controller
 {
@@ -21,6 +20,11 @@ class DashboardController extends Controller
             ->orderBy('due_date')
             ->first();
 
-        return view('tenant.dashboard', compact('reservation', 'unpaidCount', 'nextDue'));
+        $recentPayments = $user->payments()
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('tenant.dashboard', compact('reservation', 'unpaidCount', 'nextDue', 'recentPayments'));
     }
 }
